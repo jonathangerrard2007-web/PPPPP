@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Store Info dApp</title>
+ <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+ <h2>Store Info dApp</h2>
+ <p>Stored Word: <span id="output">Loading...</span></p>
+ <p>Stored Number: <span id="number">Loading...</span></p>
+ <input type="text" id="newWord" placeholder="Enter a word">
+ <button onclick="setWord()">Set Word</button>
+ <input type="number" id="newNumber" placeholder="Enter a number">
+ <button onclick="setNumber()">Set Number</button>
+ <button onclick="getValues()">Refresh Values</button>
+ <button id="connectWalletButton" onclick="connectWallet()">Connect Wallet</button>
+ <script>
+ let provider;
+ let signer;
+ let contract;
+ const contractAddress = "0xc996C97C2ef8CD4E6935F117683a1a84fF6e7b84"; // Replace this after deployment
+ const abi = [
+ { "inputs": [{ "internalType": "string", "name": "newOutput", "type": "string" }], "name": "Set_Word", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+ { "inputs": [{ "internalType": "int256", "name": "newNumber", "type": "int256" }], "name": "Set_Number", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+ { "inputs": [], "name": "output", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" },
+ { "inputs": [], "name": "number", "outputs": [{ "internalType": "int256", "name": "", "type": "int256" }], "stateMutability": "view", "type": "function" }
+ ];
+ async function connectWallet() {
+ if (window.ethereum) {
+ provider = new ethers.providers.Web3Provider(window.ethereum);
+ signer = provider.getSigner();
+ contract = new ethers.Contract(contractAddress, abi, signer);
